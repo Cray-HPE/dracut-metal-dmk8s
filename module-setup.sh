@@ -21,7 +21,7 @@ installkernel() {
 install() {
     # the rest is needed by metal-squashfs-url-dract.
     # rmdir is needed by dmsquash-live/livenet
-    inst_multiple parted mkfs.xfs lsblk sort tail
+    inst_multiple parted mkfs.xfs lsblk sort tail chmod
 
     inst_simple "$moddir/metal-dmk8s-lib.sh" "/lib/metal-dmk8s-lib.sh"
     inst_script "$moddir/metal-dmk8s-disks.sh" /sbin/metal-dmk8s-disks
