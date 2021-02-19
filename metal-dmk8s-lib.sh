@@ -10,7 +10,7 @@ metal_k8slet=$(getarg metal.disk.k8slet)
 [ -z "${metal_k8slet}" ] && metal_k8slet=LABEL=K8SLET
 
 metal_fstab=/etc/fstab.metal
-fsopts_xfs=noatime,largeio,inode64,swalloc,allocsize=131072k,discard
+fsopts_xfs=noatime,largeio,inode64,swalloc,allocsize=131072k
 
 make_ephemeral() {
     local target="${1:-}" && shift
