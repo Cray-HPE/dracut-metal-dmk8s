@@ -2,7 +2,7 @@
 rpmBuild (
     githubPushRepo: "Cray-HPE/dracut-metal-dmk8s",
     githubPushBranches: "release/.*|main",
-    master_branch: "main",
+    masterBranch: "main",
     specfile: "dracut-metal-dmk8s.spec",
     channel: "metal-ci-alerts",
     product: "csm",
