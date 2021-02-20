@@ -1,7 +1,8 @@
 @Library("dst-shared@release/shasta-1.4") _
 rpmBuild (
     githubPushRepo: "Cray-HPE/dracut-metal-dmk8s",
-    githubPushBranches : "(release/.*|main)",
+    githubPushBranches: "release/.*|main",
+    master_branch: "main",
     specfile: "dracut-metal-dmk8s.spec",
     channel: "metal-ci-alerts",
     product: "csm",
