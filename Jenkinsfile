@@ -1,4 +1,4 @@
-@Library("dst-shared@release/master") _
+@Library("dst-shared@master") _
 rpmBuild (
     githubPushRepo: "Cray-HPE/dracut-metal-dmk8s",
     githubPushBranches: "release/.*|main",
