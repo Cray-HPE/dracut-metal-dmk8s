@@ -28,6 +28,5 @@ install() {
 
     inst_hook cmdline 10 "$moddir/parse-metal-dmk8s.sh"
     inst_hook pre-udev 10 "$moddir/metal-dmk8s-genrules.sh"
-    inst_hook pre-pivot 10 "$moddir/metal-update-fstab.sh"
     dracut_need_initqueue
 }

@@ -43,7 +43,7 @@ Requires: iputils
 %install
 %{__mkdir_p} %{buildroot}%{dracut_modules}/98metaldmk8s
 %{__mkdir_p} %{buildroot}%{url_dracut_doc}
-%{__install} -m 0755 metal-dmk8s-disks.sh module-setup.sh metal-update-fstab.sh parse-metal-dmk8s.sh metal-dmk8s-lib.sh metal-dmk8s-genrules.sh %{buildroot}%{dracut_modules}/98metaldmk8s
+%{__install} -m 0755 metal-dmk8s-disks.sh module-setup.sh parse-metal-dmk8s.sh metal-dmk8s-lib.sh metal-dmk8s-genrules.sh %{buildroot}%{dracut_modules}/98metaldmk8s
 %{__install} -m 0644 README.md %{buildroot}%{url_dracut_doc}
 
 %files
