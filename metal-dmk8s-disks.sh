@@ -10,7 +10,7 @@ type make_ephemeral > /dev/null 2>&1 || . /lib/metal-dmk8s-lib.sh
 # DISKS or RETRY
 # Ignore whatever was selected for the overlay by starting +1 from that index.
 disk_index=$((${metal_disks:-2} + 1))
-ephemeral="$(lsblk -b -l -o SIZE,NAME,TYPE,TRAN | grep -E '(sata|nvme)' | sort -h | awk '{print $1 " " $2}' | tail -n +${disk_index} | tr '\n' ' ')"
+ephemeral="$(lsblk -b -l -o SIZE,NAME,TYPE,TRAN | grep -E '(sata|nvme|sas)' | sort -h | awk '{print $1 " " $2}' | tail -n +${disk_index} | tr '\n' ' ')"
 [ -z "${ephemeral}" ] && exit 1
 ephemeral_size="$(echo $ephemeral | awk '{print $1}')"
 # 1048576000000 is 1 TiB; required for this disk.
