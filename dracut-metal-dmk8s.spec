@@ -12,7 +12,7 @@
 ################################################################################
 
 Name: %{namespace}-%{intranamespace_name}
-Packager: <rustydb@hpe.com>
+Packager: <doomslayer@hpe.com>
 Release: %(echo ${BUILD_METADATA})
 Vendor: Cray HPE
 Version: %{x_y_z}
@@ -31,6 +31,7 @@ Requires: iputils
 
 %define dracut_modules /usr/lib/dracut/modules.d
 %define url_dracut_doc /usr/share/doc/metal-dracut/dmk8s/
+%define module_name 93metaldmk8s
 
 %description
 
@@ -41,16 +42,15 @@ Requires: iputils
 %build
 
 %install
-%{__mkdir_p} %{buildroot}%{dracut_modules}/98metaldmk8s
 %{__mkdir_p} %{buildroot}%{url_dracut_doc}
-%{__install} -m 0755 metal-dmk8s-disks.sh module-setup.sh parse-metal-dmk8s.sh metal-dmk8s-lib.sh metal-dmk8s-genrules.sh %{buildroot}%{dracut_modules}/98metaldmk8s
+%{__mkdir_p} %{buildroot}%{dracut_modules}/%{module_name}
+cp -pvrR ./%{module_name}/* %{buildroot}%{dracut_modules}/%{module_name} | awk '{print $3}' | sed "s/'//g" | sed "s|$RPM_BUILD_ROOT||g" | tee -a INSTALLED_FILES
 %{__install} -m 0644 README.md %{buildroot}%{url_dracut_doc}
 
-%files
+%files -f INSTALLED_FILES
 %defattr(0755, root, root)
 %license LICENSE
-%dir %{dracut_modules}/98metaldmk8s
-%{dracut_modules}/98metaldmk8s/*.sh
+%dir %{dracut_modules}/%{module_name}
 %dir %{url_dracut_doc}
 %attr(644, root, root) %{url_dracut_doc}/README.md
 
