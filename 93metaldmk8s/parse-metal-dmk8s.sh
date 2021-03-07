@@ -14,8 +14,8 @@ getargbool 0 metal.debug -d -y metal_debug && metal_debug=1
 # Afixed size:
 metal_size_conrun=$(getargnum 75 10 150 metal.disk.conrun.size)
 # Percentages as sizes
-metal_size_conlib=$(getargnum 25 10 45 metal.disk.conlib.size)
-metal_size_k8slet=$(getargnum 25 10 45 metal.disk.k8slet)
+metal_size_conlib=$(getargnum 30 10 45 metal.disk.conlib.size)
+metal_size_k8slet=$(getargnum 20 10 45 metal.disk.k8slet)
 
 getargbool 0 metal.no-wipe -d -y metal_nowipe && metal_nowipe=1 || metal_nowipe=0
 
