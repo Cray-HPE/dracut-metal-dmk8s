@@ -82,5 +82,5 @@ The following parameters are required for this module to work, however they belo
 
 ##### `metal.server`
 
-> This module enables itself when metal.server is defined, indicating a node is (re)building and requires partitions. Omitting this will disable this modules functions.
-
+> Enable or disable this module. This parameter has no other effect on 93dmk8s other than indicating that the active node is currently (re)building and requires partitions.
+> This module depends on 90metalmdsquash, that module entails filling in the `metal.server` parameter.
