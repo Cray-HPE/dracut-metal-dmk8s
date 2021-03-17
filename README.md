@@ -1,5 +1,4 @@
-93metaldmk8s - persistent kubernetes device-maps 
-===============
+# METAL 93dmk8s - persistent kubernetes device-maps 
 
 This module deploys an ephemeral disk to be used by kubernetes containers:
 
@@ -35,45 +34,41 @@ The `unit` of size varies per-parameter; pay attention to avoid undesirable part
 The FS labels can be changed from their default values.
 This may be desirable for cases when another LVM is being re-used.
 
+##### `metal.disk.conrun=CONRUN`
 
-#####  `metal.disk.conrun`
+> FSLabel for the `/run/containerd`.
 
-FSLabel for the `/run/containerd`.
+##### `metal.disk.conlib=CONLIB`
 
-Default: `CONRUN`
+> FSLabel for the `/run/lib-containerd`.
 
-##### `metal.disk.conlib`
+##### `metal.disk.k8slet=K8SLET`
 
-FSLabel for the `/run/lib-containerd`.
-
-Default: `CONLIB`
-
-##### `metal.disk.k8slet`
-
-FSLabel for the `/var/lib/kubelet`.
-
-Default: `K8SLET`
+> FSLabel for the `/var/lib/kubelet`.
 
 ## Partition Sizes
 
-#####  `metal.disk.conrun.size=75`
+##### `metal.disk.conrun.size=75`
 
-Size of the `/run/containerd` partition, measured in gigabytes (`GB`):
-
- - default: 75
- - min: 10
- - max: 150
+> Size of the `/run/containerd` partition, measured in gigabytes (`GB`):
+> 
+> * default: 75
+> * min: 10
+> * max: 150
 
 ##### `metal.disk.conlib.size=40` 
 
-Size of the `/run/lib-containerd` partition, measured in percentage (`%`):
-- default: 40
-- min: 10
-- max: 45
+> Size of the `/run/lib-containerd` partition, measured in percentage (`%`):
+> 
+> * default: 40
+> * min: 10
+> * max: 45
 
-##### `metal.disk.k8slet.size=10` default:  25 min: 10 max: 45
+##### `metal.disk.k8slet.size=10`
 
-Size of the `/var/lib/kubelet` partition, measured in percentage (`%`):
-- default: 10
-- min: 10
-- max: 45
+> Size of the `/var/lib/kubelet` partition, measured in percentage (`%`):
+> 
+> * default: 10
+> * min: 10
+> * max: 45
+
