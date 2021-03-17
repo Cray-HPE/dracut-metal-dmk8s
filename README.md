@@ -48,7 +48,7 @@ This may be desirable for cases when another LVM is being re-used.
 
 > FSLabel for the `/var/lib/kubelet`.
 
-## Partition Size Parameters
+### Partition Size Parameters
 
 ##### `metal.disk.conrun.size=75`
 
