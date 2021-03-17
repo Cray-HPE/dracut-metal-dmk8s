@@ -29,7 +29,9 @@ For more information on the OverlayFS, see:
 
 The `unit` of size varies per-parameter; pay attention to avoid undesirable partition tables
 
-## FSLabels
+## Customizable Parameters
+
+### FSLabel Parameters
 
 The FS labels can be changed from their default values.
 This may be desirable for cases when another LVM is being re-used.
@@ -46,7 +48,7 @@ This may be desirable for cases when another LVM is being re-used.
 
 > FSLabel for the `/var/lib/kubelet`.
 
-## Partition Sizes
+## Partition Size Parameters
 
 ##### `metal.disk.conrun.size=75`
 
@@ -71,4 +73,14 @@ This may be desirable for cases when another LVM is being re-used.
 > * default: 10
 > * min: 10
 > * max: 45
+
+## Required Parameters
+
+The following parameters are required for this module to work, however they belong to the native dracut space.
+
+> See [`module-setup.sh`](./93metaldmk8s/module-setup.sh) for the full list of module and driver dependencies.
+
+##### `metal.server`
+
+> This module enables itself when metal.server is defined, indicating a node is (re)building and requires partitions. Omitting this will disable this modules functions.
 
