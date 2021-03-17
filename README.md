@@ -1,4 +1,4 @@
-93dmk8s - persistent kubernetes device-maps 
+93metaldmk8s - persistent kubernetes device-maps 
 ===============
 
 This module deploys an ephemeral disk to be used by kubernetes containers:
@@ -6,6 +6,10 @@ This module deploys an ephemeral disk to be used by kubernetes containers:
 - `/run/containerd` partition
 - `/var/lib/kubelet` partition
 - `/run/lib-containerd` partition
+
+# LVM
+
+> _Coming Soon_
 
 # OverlayFS
 
