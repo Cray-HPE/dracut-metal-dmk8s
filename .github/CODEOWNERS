@@ -1,0 +1,8 @@
+# Global
+*               @Cray-HPE/metal
+
+# Dracut Module Creator
+93metaldmk8s/   @rustydb
+
+# Publishing
+gh-pages        @jacobsalmela
