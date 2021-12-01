@@ -11,7 +11,7 @@ type metal_resolve_disk > /dev/null 2>&1 || . /lib/metal-lib.sh
 # DISKS or RETRY
 # Offset the selection; choose any disk that wasn't selected by the RAID.
 disk_offset=$((${metal_disks:-2} + 1))
-ephemeral="$(lsblk -b -l -o SIZE,NAME,TYPE,TRAN | grep -E '(sata|nvme|sas)' | sort -h | awk '{print $1 "," $2}' | tail -n +${disk_offset} | tr '\n' ' ')"
+ephemeral="$(lsblk -l -o SIZE,NAME,TYPE,TRAN | grep -E '('"$metal_transports"')' | sort -u | awk '{print $2}' | tail -n +${disk_offset} | tr '\n' ' ' | sed 's/ *$//')"
 [ -z "${ephemeral}" ] && exit 1
 
 # Find the right disk.
