@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 [ -z "${metal_debug:-0}" ] || set -x
 
