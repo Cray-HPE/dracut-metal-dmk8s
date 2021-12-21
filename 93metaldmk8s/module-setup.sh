@@ -3,7 +3,8 @@
 
 # called by dracut
 check() {
-    return 0
+    require_binaries mkfs.xfs parted || return 1
+    return 
 }
 
 # called by dracut
@@ -21,7 +22,7 @@ installkernel() {
 install() {
     # the rest is needed by metal-squashfs-url-dract.
     # rmdir is needed by dmsquash-live/livenet
-    inst_multiple parted mkfs.xfs lsblk sort tail chmod
+    inst_multiple chmod lsblk mkfs.xfs parted sort tail
 
     inst_simple "$moddir/metal-dmk8s-lib.sh" "/lib/metal-dmk8s-lib.sh"
     inst_script "$moddir/metal-dmk8s-disks.sh" /sbin/metal-dmk8s-disks

@@ -28,7 +28,7 @@ make_ephemeral() {
     mkfs.xfs -f -L ${metal_conlib#*=} "/dev/${target}2" || warn Failed to create "${metal_conlib#*=}"
     sleep 2
     mkfs.xfs -f -L ${metal_k8slet#*=} "/dev/${target}3" || warn Failed to create "${metal_k8slet#*=}"
-    
+
     mkdir -p /run/containerd /var/lib/kubelet /var/lib/containerd /run/lib-containerd
     {
         printf '% -18s\t% -18s\t%s\t%s 0 0\n' "${metal_conrun}" /run/containerd xfs "$fsopts_xfs"
