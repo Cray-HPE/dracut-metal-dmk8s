@@ -9,9 +9,6 @@ metal_conlib=$(getarg metal.disk.conlib)
 metal_k8slet=$(getarg metal.disk.k8slet)
 [ -z "${metal_k8slet}" ] && metal_k8slet=LABEL=K8SLET
 
-metal_fstab=/etc/fstab.metal
-fsopts_xfs=noatime,largeio,inode64,swalloc,allocsize=131072k
-
 make_ephemeral() {
     local target="${1:-}" && shift
     [ -z "$target" ] && info 'No ephemeral disk.' && return 0
@@ -31,9 +28,9 @@ make_ephemeral() {
 
     mkdir -p /run/containerd /var/lib/kubelet /var/lib/containerd /run/lib-containerd
     {
-        printf '% -18s\t% -18s\t%s\t%s 0 0\n' "${metal_conrun}" /run/containerd xfs "$fsopts_xfs"
-        printf '% -18s\t% -18s\t%s\t%s 0 0\n' "${metal_conlib}" /run/lib-containerd xfs "$fsopts_xfs"
-        printf '% -18s\t% -18s\t%s\t%s 0 0\n' "${metal_k8slet}" /var/lib/kubelet xfs "$fsopts_xfs"
+        printf '% -18s\t% -18s\t%s\t%s 0 0\n' "${metal_conrun}" /run/containerd xfs "$metal_fsopts_xfs"
+        printf '% -18s\t% -18s\t%s\t%s 0 0\n' "${metal_conlib}" /run/lib-containerd xfs "$metal_fsopts_xfs"
+        printf '% -18s\t% -18s\t%s\t%s 0 0\n' "${metal_k8slet}" /var/lib/kubelet xfs "$metal_fsopts_xfs"
     } >>$metal_fstab
 
     # Mount FS to allow creation of necessary overlayFS directories; might as well mount everything with -a.
