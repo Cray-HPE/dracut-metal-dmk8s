@@ -1,4 +1,3 @@
-#!/bin/bash
 #
 # MIT License
 #
@@ -22,36 +21,24 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
-# module-setup.sh
+name: shellcheck
+on:
+  pull_request:
+    branches:
+      - develop
+      - main
+      - master
+      - lts/*
+      - release/*
 
-# called by dracut
-check() {
-    require_binaries mkfs.xfs parted || return 1
-    return 
-}
-
-# called by dracut
-depends() {
-    # Needed so overlayFS is available, that's where the new fstab is dropped.
-    echo metalmdsquash
-    return 0
-}
-
-installkernel() {
-    instmods hostonly=''
-}
-
-# called by dracut
-install() {
-    # the rest is needed by metal-squashfs-url-dract.
-    # rmdir is needed by dmsquash-live/livenet
-    inst_multiple chmod lsblk mkfs.xfs parted sort tail
+jobs:
+  shellcheck:
+    name: shellcheck
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
     
-    #shellcheck disable=SC2154
-    inst_simple "$moddir/metal-dmk8s-lib.sh" "/lib/metal-dmk8s-lib.sh"
-    inst_script "$moddir/metal-dmk8s-disks.sh" /sbin/metal-dmk8s-disks
-
-    inst_hook cmdline 10 "$moddir/parse-metal-dmk8s.sh"
-    inst_hook pre-udev 10 "$moddir/metal-dmk8s-genrules.sh"
-    dracut_need_initqueue
-}
+    - name: run shellcheck
+      uses: ludeeus/action-shellcheck@1.1.0
+      with:
+        severity: warning
