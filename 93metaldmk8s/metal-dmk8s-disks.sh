@@ -18,7 +18,7 @@ ephemeral="$(metal_scand $disk_offset)"
 # Find the right disk.
 # 1048576000000 is 1 TiB; required for this disk.
 # exit 0 ; this module does not need to run on this node unless it meets the requirements.
-ephemeral_disk=$(metal_resolve_disk "$ephemeral" 1048576000000) || exit 0
+ephemeral_disk=$(metal_resolve_disk "$ephemeral" $metal_disk_large) || exit 0
 
 # Process the disk.
 if [ "${metal_nowipe:-0}" = 0 ]; then
