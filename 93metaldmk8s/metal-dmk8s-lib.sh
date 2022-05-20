@@ -18,6 +18,11 @@ make_ephemeral() {
         mkpart extended xfs "${metal_size_conrun:-75}GB" "${metal_size_conlib:-25}%" \
         mkpart extended xfs "${metal_size_conlib:-25}%" "$((${metal_size_conlib:-25} + ${metal_size_k8slet:-25}))%"
 
+    # NVME partitions have a "p" to delimit the partition number.
+    if [[ "$target" =~ "nvme" ]]; then
+        target="${target}p" 
+    fi
+
     # NOTE: These don't persist, but are appropriate to add in-case they ever do.
     sleep 2
     mkfs.xfs -f -L ${metal_conrun#*=} "/dev/${target}1" || warn Failed to create "${metal_conrun#*=}"
