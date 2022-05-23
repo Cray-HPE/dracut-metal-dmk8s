@@ -1,15 +1,59 @@
 #!/bin/bash
+#
+# MIT License
+#
+# (C) Copyright 2022 Hewlett Packard Enterprise Development LP
+#
+# Permission is hereby granted, free of charge, to any person obtaining a
+# copy of this software and associated documentation files (the "Software"),
+# to deal in the Software without restriction, including without limitation
+# the rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Software, and to permit persons to whom the
+# Software is furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+# OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+# ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+# OTHER DEALINGS IN THE SOFTWARE.
+#
+# metal-dmk8s-lib.sh
+[ "${metal_debug:-0}" = 0 ] || set -x
 
-type info > /dev/null 2>&1 || . /lib/dracut-lib.sh
-
-metal_conrun=$(getarg metal.disk.conrun)
-[ -z "${metal_conrun}" ] && metal_conrun=LABEL=CONRUN
-metal_conlib=$(getarg metal.disk.conlib)
-[ -z "${metal_conlib}" ] && metal_conlib=LABEL=CONLIB
-metal_k8slet=$(getarg metal.disk.k8slet)
-[ -z "${metal_k8slet}" ] && metal_k8slet=LABEL=K8SLET
+command -v info > /dev/null 2>&1 || . /lib/dracut-lib.sh
 
 make_ephemeral() {
+
+    # Check if the disks exists and cancel if they do.
+    local conrun_scheme=${metal_conrun%=*}
+    local conrun_authority=${metal_conrun#*=}
+    local conlib_scheme=${metal_conlib%=*}
+    local conlib_authority=${metal_conlib#*=}
+    local k8slet_scheme=${metal_k8slet%=*}
+    local k8slet_authority=${metal_k8slet#*=}
+    local disks=()
+    disks+=( "/dev/disk/by-${conrun_scheme,,}/${conrun_authority^^}" )
+    disks+=( "/dev/disk/by-${conlib_scheme,,}/${conlib_authority^^}" )
+    disks+=( "/dev/disk/by-${k8slet_scheme,,}/${k8slet_authority^^}" )
+    for disk in "${disks[@]}"; do 
+        if blkid -s UUID -o value "$disk" >/dev/null; then
+
+            # echo 0 to signal that nothing was done; the disks exist
+            echo 0 > /tmp/metalephemeraldisk.done
+        else
+            # A disk doesn't exist yet.
+            # Remove the file if it was created and then exit the loop to start making the disks.
+            rm -f /tmp/metalephemeraldisk.done
+            break
+        fi
+    done
+    [ -f /tmp/metalephemeraldisk.done ] && return
+    
     local target="${1:-}" && shift
     [ -z "$target" ] && info 'No ephemeral disk.' && return 0
 
@@ -44,5 +88,6 @@ make_ephemeral() {
     # Mount FS again, catching our new overlayFS. Failure to mount here is fatal.
     mount -a -v -T $metal_fstab
 
+    # echo 1 to signal that this module create a disk.
     echo 1 > /tmp/metalephemeraldisk.done && return
 }
