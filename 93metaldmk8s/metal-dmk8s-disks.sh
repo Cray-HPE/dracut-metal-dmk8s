@@ -33,7 +33,7 @@ disks_exist || exit 1
 command -v make_ephemeral > /dev/null 2>&1 || . /lib/metal-dmk8s-lib.sh
 
 # Wait for the pave function to wipe the disks if the wipe is enabled.
-[ metal_paved ] || exit 1
+metal_paved || exit 1
 
 # Check if our filesystems already exist.
 scan_ephemeral
