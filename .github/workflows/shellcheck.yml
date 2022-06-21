@@ -1,4 +1,3 @@
-#!/bin/bash
 #
 # MIT License
 #
@@ -22,15 +21,24 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
-# metal-dmk8s-genrules.sh
-[ "${metal_debug:-0}" = 0 ] || set -x
+name: shellcheck
+on:
+  pull_request:
+    branches:
+      - develop
+      - main
+      - master
+      - lts/*
+      - release/*
 
-command -v wait_for_dev > /dev/null 2>&1 || . /lib/dracut-lib.sh
-
-# Only run when luks is disabled and a deployment server is present.
-if ! getargbool 0 rd.luks -d -n rd_NO_LUKS; then
-    if [ -n "${metal_server:-}" ]; then 
-        wait_for_dev -n /dev/metal-k8s
-        /sbin/initqueue --settled --onetime --unique /sbin/metal-dmk8s-disks
-    fi
-fi
+jobs:
+  shellcheck:
+    name: shellcheck
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: run shellcheck
+      uses: ludeeus/action-shellcheck@1.1.0
+      with:
+        severity: error
