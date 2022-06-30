@@ -25,6 +25,15 @@
 # metal-dmk8s-genrules.sh
 [ "${metal_debug:-0}" = 0 ] || set -x
 
+command -v getarg > /dev/null 2>&1 || . /lib/dracut-lib.sh
+
+case "$(getarg root)" in 
+    kdump)
+        # do not do anything for kdump
+        exit 0
+        ;;
+esac
+
 command -v wait_for_dev > /dev/null 2>&1 || . /lib/dracut-lib.sh
 
 # Only run when luks is disabled and a deployment server is present.
