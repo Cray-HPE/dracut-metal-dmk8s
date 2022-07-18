@@ -76,6 +76,7 @@ make_ephemeral() {
 
     local target="${1:-}" && shift
     [ -z "$target" ] && info 'No ephemeral disk.' && return 0
+    command -v _trip_udev > /dev/null 2>&1 || . /lib/metal-lib.sh
 
     parted --wipesignatures -m --align=opt --ignore-busy -s "/dev/${target}" -- mktable gpt \
         mkpart extended xfs 2048s "${metal_size_conrun:-75}GB" \
@@ -87,8 +88,14 @@ make_ephemeral() {
         target="${target}p" 
     fi
 
+    partprobe "/dev/${target}"
+    _trip_udev
     mkfs.xfs -f -L ${metal_conrun#*=} "/dev/${target}1" || metal_dmk8s_die "Failed to create ${metal_conrun#*=}"
+    partprobe "/dev/${target}"
+    _trip_udev
     mkfs.xfs -f -L ${metal_conlib#*=} "/dev/${target}2" || metal_dmk8s_die "Failed to create ${metal_conlib#*=}"
+    partprobe "/dev/${target}"
+    _trip_udev
     mkfs.xfs -f -L ${metal_k8slet#*=} "/dev/${target}3" || metal_dmk8s_die "Failed to create ${metal_k8slet#*=}"
 
     mkdir -p /run/containerd /var/lib/kubelet /var/lib/containerd /run/lib-containerd
