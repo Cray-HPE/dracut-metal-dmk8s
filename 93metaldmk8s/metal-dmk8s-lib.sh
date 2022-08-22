@@ -85,18 +85,18 @@ make_ephemeral() {
 
     # NVME partitions have a "p" to delimit the partition number.
     if [[ "$target" =~ "nvme" ]]; then
-        target="${target}p" 
+        nvme=1
     fi
 
     partprobe "/dev/${target}"
     _trip_udev
-    mkfs.xfs -f -L ${metal_conrun#*=} "/dev/${target}1" || metal_dmk8s_die "Failed to create ${metal_conrun#*=}"
+    mkfs.xfs -f -L ${metal_conrun#*=} "/dev/${target}${nvme:+p}1" || metal_dmk8s_die "Failed to create ${metal_conrun#*=}"
     partprobe "/dev/${target}"
     _trip_udev
-    mkfs.xfs -f -L ${metal_conlib#*=} "/dev/${target}2" || metal_dmk8s_die "Failed to create ${metal_conlib#*=}"
+    mkfs.xfs -f -L ${metal_conlib#*=} "/dev/${target}${nvme:+p}2" || metal_dmk8s_die "Failed to create ${metal_conlib#*=}"
     partprobe "/dev/${target}"
     _trip_udev
-    mkfs.xfs -f -L ${metal_k8slet#*=} "/dev/${target}3" || metal_dmk8s_die "Failed to create ${metal_k8slet#*=}"
+    mkfs.xfs -f -L ${metal_k8slet#*=} "/dev/${target}${nvme:+p}3" || metal_dmk8s_die "Failed to create ${metal_k8slet#*=}"
 
     mkdir -p /run/containerd /var/lib/kubelet /var/lib/containerd /run/lib-containerd
     {
