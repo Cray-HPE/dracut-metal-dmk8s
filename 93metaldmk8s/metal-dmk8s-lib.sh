@@ -78,10 +78,20 @@ make_ephemeral() {
     [ -z "$target" ] && info 'No ephemeral disk.' && return 0
     command -v _trip_udev > /dev/null 2>&1 || . /lib/metal-lib.sh
 
+    # Find the boundaries for each partition.
+    local conlib_end=$((metal_size_conrun + metal_size_conlib))
+    local k8slet_end=$((conlib_end + metal_size_k8slet))
+    local total=$((conlib_end + k8slet_end))
+
+    # The sum must not exceed 100%.    
+    if [[ $((conlib_end + k8slet_end)) -gt 100 ]]; then
+        metal_die "The given partition sizing yields [${total}], the sum of the CONRUN, CONLIB, and K8SLET sizes must not exceed 100%"
+    fi
+
     parted --wipesignatures -m --align=opt --ignore-busy -s "/dev/${target}" -- mktable gpt \
-        mkpart extended xfs 2048s "${metal_size_conrun:-75}GB" \
-        mkpart extended xfs "${metal_size_conrun:-75}GB" "${metal_size_conlib:-25}%" \
-        mkpart extended xfs "${metal_size_conlib:-25}%" "$((${metal_size_conlib:-25} + ${metal_size_k8slet:-25}))%"
+        mkpart extended xfs 2048s "${metal_size_conrun}%" \
+        mkpart extended xfs "${metal_size_conrun}%" "${conlib_end}%" \
+        mkpart extended xfs "${conlib_end}%" "${k8slet_end}%"
 
     # NVME partitions have a "p" to delimit the partition number.
     if [[ "$target" =~ "nvme" ]]; then

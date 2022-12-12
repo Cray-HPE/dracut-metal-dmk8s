@@ -37,10 +37,10 @@ metal_k8slet=$(getarg metal.disk.k8slet)
 [ -z "${metal_k8slet}" ] && metal_k8slet=LABEL=K8SLET
 
 # Affixed siz(s):
-metal_size_conrun=$(getargnum 75 10 150 metal.disk.conrun.size)
+metal_size_conrun=$(getargnum 5 15 50 metal.disk.conrun.size)
 # Percentages as size(s):
-metal_size_conlib=$(getargnum 40 10 45 metal.disk.conlib.size)
-metal_size_k8slet=$(getargnum 10 10 45 metal.disk.k8slet)
+metal_size_conlib=$(getargnum 40 70 85 metal.disk.conlib.size)
+metal_size_k8slet=$(getargnum 10 15 55 metal.disk.k8slet)
 
 getargbool 0 metal.no-wipe -d -y metal_nowipe && metal_nowipe=1 || metal_nowipe=0
 

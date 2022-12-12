@@ -67,24 +67,30 @@ This may be desirable for cases when another LVM is being re-used.
 
 ##### `metal.disk.conrun.size`
 
-> Size of the `/run/containerd` partition, measured in gigabytes (`GB`):
-> - `Default: 75`
-> - `Min: 10`
-> - `Max: 150`
+> Size of the `/run/containerd` partition.
+> The maximum is determined by 100% minus the minimums of the other two required, customizable partitions.
+> - `Default: 15`
+> - `Min: 5`
+> - `Max: 50`
+> - `Unit: Percent`
 
 ##### `metal.disk.conlib.size` 
 
-> Size of the `/run/lib-containerd` partition, measured in percentage (`%`):
-> - `Default: 40`
-> - `Min: 10`
-> - `Max: 45`
+> Size of the `/run/lib-containerd` partition.
+> The maximum is determined by 100% minus the minimums of the other two required, customizable partitions.
+> - `Default: 70`
+> - `Min: 40`
+> - `Max: 85`
+> - `Unit: Percent`
 
 ##### `metal.disk.k8slet.size`
 
-> Size of the `/var/lib/kubelet` partition, measured in percentage (`%`):
-> - `Default: 10`
+> Size of the `/var/lib/kubelet` partition.
+> The maximum is determined by 100% minus the minimums of the other two required, customizable partitions.
+> - `Default: 15`
 > - `Min: 10`
-> - `Max: 45`
+> - `Max: 55`
+> - `Unit: Percent`
 
 ### Required Parameters
 
