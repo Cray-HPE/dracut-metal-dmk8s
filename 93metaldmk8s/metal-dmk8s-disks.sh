@@ -42,22 +42,27 @@ scan_ephemeral
 if [ ! -f $EPHEMERAL_DONE_FILE ]; then
 
     # Offset the search by the number of disks used up by the main metal dracut module.
-    disk_offset=$((${metal_disks:-2} + 1))
-    ephemeral="$(metal_scand $disk_offset)"
-    
+    ephemeral=''
+    disks="$(metal_scand)"
+    IFS=" " read -r -a pool <<< "$disks"
+    for disk in "${pool[@]}"; do
+        if [ -n "${ephemeral}" ]; then
+            break
+        fi
+        ephemeral=$(metal_resolve_disk "$disk" "$metal_disk_large")
+    done
+
     # If no disks were found, die.
     # When rd.luks is disabled, this hook-script expects to find a disk. Die if one isn't found.
     if [ -z "${ephemeral}" ]; then
         metal_dmk8s_die "No disks were found for ephemeral use."
         exit 1
+    else
+        echo >&2 "Found the following disk for ephemeral storage: $ephemeral"
     fi
-    
-    # Find a disk that is at least as big as $metal_disk_large.
-    ephemeral_disk=$(metal_resolve_disk "$ephemeral" $metal_disk_large)
-    echo >&2 "Found the following disk for ephemeral storage: $ephemeral_disk"
-    
+
     # Make the ephemeral disk.
-    make_ephemeral "$ephemeral_disk"
+    make_ephemeral "$ephemeral"
 else
     echo 0 > $EPHEMERAL_DONE_FILE
 fi

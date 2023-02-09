@@ -21,46 +21,35 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
-# disable compressing files
-%define __os_install_post %{nil}
-%define x_y_z %(echo $VERSION)
-%define release_extra %(if [ -e "%{_sourcedir}/_release_extra" ] ; then cat "%{_sourcedir}/_release_extra"; else echo ""; fi)
-%define source_name %{name}
-
-################################################################################
-# Primary package definition #
-################################################################################
-
 Name: %(echo $NAME)
 Packager: <doomslayer@hpe.com>
 Release: 1
-Vendor: Cray HPE
-Version: %{x_y_z}
-Source: %{source_name}-%{version}.tar.bz2
+Vendor: Hewlett Packard Enterprise Development LP
+Version: %(echo $VERSION)
+Source: %{name}-%{version}.tar.bz2
 BuildArch: noarch
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}
 Group: System/Management
 License: MIT License
-Summary: Dracut module for setting up an ephemeral disk as kubernetes container storage.
+Summary: Dracut module for setting up a random disk for ephemeral Kubernetes storage (e.g. containerd)
 Provides: metal-dmk8s
-Provides: 93metaldmk8s
 
 Requires: coreutils
 Requires: dracut
 Requires: dracut-metal-mdsquash
 Requires: parted
-Requires: util-linux-systemd
+Requires: util-linux
 Requires: xfsprogs
 
 %define dracut_modules /usr/lib/dracut/modules.d
-%define url_dracut_doc /usr/share/doc/metal-dracut/dmk8s/
 %define module_name 93metaldmk8s
+Provides: %{module_name}
+%define url_dracut_doc /usr/share/doc/metal/%{module_name}/
 
 %description
 
 %prep
 
-%setup
+%setup -q
 
 %build
 
@@ -85,10 +74,5 @@ cp -pvrR ./%{module_name}/* %{buildroot}%{dracut_modules}/%{module_name} | awk '
 
 %posttrans
 mkinitrd -B
-
-if rpm -q kdump 2>&1 >/dev/null ; then
-    mkdumprd -f
-fi
-
 
 %changelog

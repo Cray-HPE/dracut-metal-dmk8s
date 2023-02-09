@@ -26,7 +26,7 @@
 
 # called by dracut
 check() {
-    require_binaries mkfs.xfs parted || return 1
+    require_binaries blkid lsblk mkfs.xfs mount parted partprobe || return 1
     return 
 }
 
