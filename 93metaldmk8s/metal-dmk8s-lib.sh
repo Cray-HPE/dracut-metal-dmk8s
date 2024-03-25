@@ -105,10 +105,7 @@ make_ephemeral() {
         printf '% -18s\t% -18s\t%s\t%s 0 0\n' "${metal_k8slet}" /var/lib/kubelet xfs "$metal_fsopts_xfs"
     } >>$metal_fstab
 
-    # Mount FS to allow creation of necessary overlayFS directories; might as well mount everything with -a.
-    mount -a -v -T $metal_fstab && mkdir -p /run/lib-containerd/ovlwork /run/lib-containerd/overlayfs
-    printf '% -18s\t% -18s\t%s\t%s 0 0\n' containerd_overlayfs /var/lib/containerd overlay lowerdir=/var/lib/containerd,upperdir=/run/lib-containerd/overlayfs,workdir=/run/lib-containerd/ovlwork >>$metal_fstab
-    # Mount FS again, catching our new overlayFS. Failure to mount here is fatal.
+    # Mount filesystems. Failure to mount here is fatal.
     mount -a -v -T $metal_fstab
 
     # echo 1 to signal that this module create a disk.
