@@ -4,11 +4,10 @@ This module deploys an ephemeral disk to be used by kubernetes containers:
 
 - `/run/containerd` partition
 - `/var/lib/kubelet` partition
-- `/run/lib-containerd` partition
+- `/var/lib/containerd` partition
 
 ## Table of Contents
 
-- [OverlayFS](README.md#overlayfs)
 - [Parameters](README.md#parameters)
     - [Customizable Parameters](README.md#customizable-parameters) 
         - [FSLabel Parameters](README.md#fslabel-parameters)
@@ -21,21 +20,6 @@ This module deploys an ephemeral disk to be used by kubernetes containers:
             - [`metal.disk.k8slet.size`](README.md#metaldiskk8sletsize)
     - [Required Parameters](README.md#required-parameters)
     - [`metal.server`](README.md#metalserver)
-
-## OverlayFS
-
-In order to allow reading of the original material in `/var/lib/containerd` residing in the SquashFS image while offering persistent storage, an overlayFS is created.
-
-Only `/var/lib/containerd` is an OverlayFS.
-- Lower Directory (Read-Only): `/var/lib/containerd`
-- Upper Directory (Writeable): `/run/lib-containerd`
-
-> Existing data from the root OverlayFS and the squashFS will be read-only at that location once the `containerd_overlayfs` is mounted.
-
-For more information on the OverlayFS, see:
-- [90metalmdsquash](https://github.com/Cray-HPE/dracut-metal-mdsquash#rootfs-and-the-persistent-overlayfs)
-- [CSM Usage of OverlayFS](https://github.com/Cray-HPE/docs-csm/blob/main/background/ncn_mounts_and_file_systems.md)
-- [Kernel Documentation on OverlayFS](https://www.kernel.org/doc/html/latest/filesystems/overlayfs.html)
 
 ## Parameters
 
@@ -55,7 +39,7 @@ This may be desirable for cases when another LVM is being re-used.
 
 ##### `metal.disk.conlib`
 
-> FSLabel for the `/run/lib-containerd`.
+> FSLabel for the `/var/lib/containerd`.
 > - `Default: CONLIB`
 
 ##### `metal.disk.k8slet`
@@ -74,7 +58,7 @@ This may be desirable for cases when another LVM is being re-used.
 
 ##### `metal.disk.conlib.size` 
 
-> Size of the `/run/lib-containerd` partition, measured in percentage (`%`):
+> Size of the `/var/lib/containerd` partition, measured in percentage (`%`):
 > - `Default: 40`
 > - `Min: 10`
 > - `Max: 45`
