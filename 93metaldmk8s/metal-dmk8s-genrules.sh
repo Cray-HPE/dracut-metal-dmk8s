@@ -38,7 +38,8 @@ command -v wait_for_dev > /dev/null 2>&1 || . /lib/dracut-lib.sh
 
 # Only run when luks is disabled and a deployment server is present.
 if ! getargbool 0 rd.luks -d -n rd_NO_LUKS; then
-    if [ -n "${metal_server:-}" ]; then 
+    metal_server=$(getarg metal.server=)
+    if [ -n "${metal_server:-}" ]; then
         wait_for_dev -n /dev/metal-k8s
         /sbin/initqueue --settled --onetime --unique /sbin/metal-dmk8s-disks
     fi
