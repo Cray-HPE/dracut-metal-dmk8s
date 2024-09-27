@@ -2,7 +2,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2022 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2022-2024 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -23,7 +23,7 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 #
 # metal-dmk8s-disks.sh
-[ "${metal_debug:-0}" = 0 ] || set -x
+[ "${METAL_DEBUG:-0}" = 0 ] || set -x
 
 # Wait for disks to exist.
 command -v disks_exist > /dev/null 2>&1 || . /lib/metal-lib.sh
@@ -39,7 +39,7 @@ metal_paved || exit 1
 scan_ephemeral
 
 # Make the ephemeral disk if it didn't exist.
-if [ ! -f $EPHEMERAL_DONE_FILE ]; then
+if [ ! -f "$EPHEMERAL_DONE_FILE" ]; then
 
     # Offset the search by the number of disks used up by the main metal dracut module.
     ephemeral=''
@@ -49,7 +49,7 @@ if [ ! -f $EPHEMERAL_DONE_FILE ]; then
         if [ -n "${ephemeral}" ]; then
             break
         fi
-        ephemeral=$(metal_resolve_disk "$disk" "$metal_disk_large")
+        ephemeral=$(metal_resolve_disk "$disk" "$METAL_DISK_LARGE")
     done
 
     # If no disks were found, die.
@@ -64,11 +64,11 @@ if [ ! -f $EPHEMERAL_DONE_FILE ]; then
     # Make the ephemeral disk.
     make_ephemeral "$ephemeral"
 else
-    echo 0 > $EPHEMERAL_DONE_FILE
+    echo 0 > "$EPHEMERAL_DONE_FILE"
 fi
 
 # If our disk was created, satisfy the wait_for_dev hook, otherwise keep waiting.
-if [ -f $EPHEMERAL_DONE_FILE ]; then
+if [ -f "$EPHEMERAL_DONE_FILE" ]; then
     ln -s null /dev/metal-k8s
     exit 0
 fi
