@@ -41,34 +41,34 @@ scan_ephemeral
 # Make the ephemeral disk if it didn't exist.
 if [ ! -f "$EPHEMERAL_DONE_FILE" ]; then
 
-    # Offset the search by the number of disks used up by the main metal dracut module.
-    ephemeral=''
-    disks="$(metal_scand)"
-    IFS=" " read -r -a pool <<< "$disks"
-    for disk in "${pool[@]}"; do
-        if [ -n "${ephemeral}" ]; then
-            break
-        fi
-        ephemeral=$(metal_resolve_disk "$disk" "$METAL_DISK_LARGE")
-    done
-
-    # If no disks were found, die.
-    # When rd.luks is disabled, this hook-script expects to find a disk. Die if one isn't found.
-    if [ -z "${ephemeral}" ]; then
-        metal_dmk8s_die "No disks were found for ephemeral use."
-        exit 1
-    else
-        echo >&2 "Found the following disk for ephemeral storage: $ephemeral"
+  # Offset the search by the number of disks used up by the main metal dracut module.
+  ephemeral=''
+  disks="$(metal_scand)"
+  IFS=" " read -r -a pool <<< "$disks"
+  for disk in "${pool[@]}"; do
+    if [ -n "${ephemeral}" ]; then
+      break
     fi
+    ephemeral=$(metal_resolve_disk "$disk" "$METAL_DISK_LARGE")
+  done
 
-    # Make the ephemeral disk.
-    make_ephemeral "$ephemeral"
+  # If no disks were found, die.
+  # When rd.luks is disabled, this hook-script expects to find a disk. Die if one isn't found.
+  if [ -z "${ephemeral}" ]; then
+    metal_dmk8s_die "No disks were found for ephemeral use."
+    exit 1
+  else
+    echo >&2 "Found the following disk for ephemeral storage: $ephemeral"
+  fi
+
+  # Make the ephemeral disk.
+  make_ephemeral "$ephemeral"
 else
-    echo 0 > "$EPHEMERAL_DONE_FILE"
+  echo 0 > "$EPHEMERAL_DONE_FILE"
 fi
 
 # If our disk was created, satisfy the wait_for_dev hook, otherwise keep waiting.
 if [ -f "$EPHEMERAL_DONE_FILE" ]; then
-    ln -s null /dev/metal-k8s
-    exit 0
+  ln -s null /dev/metal-k8s
+  exit 0
 fi
