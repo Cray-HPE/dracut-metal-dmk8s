@@ -2,7 +2,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2022 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2024 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -47,6 +47,7 @@ install() {
     # rmdir is needed by dmsquash-live/livenet
     inst_multiple chmod lsblk mkfs.xfs parted partprobe sort tail
 
+    # shellcheck disable=SC2154
     inst_simple "$moddir/metal-dmk8s-lib.sh" "/lib/metal-dmk8s-lib.sh"
     inst_script "$moddir/metal-dmk8s-disks.sh" /sbin/metal-dmk8s-disks
 

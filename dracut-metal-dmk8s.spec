@@ -1,7 +1,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2022 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2022-2024 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -35,7 +35,7 @@ Provides: metal-dmk8s
 
 Requires: coreutils
 Requires: dracut
-Requires: dracut-metal-mdsquash
+Requires: dracut-metal-mdsquash >= 2.5.0
 Requires: parted
 Requires: util-linux
 Requires: xfsprogs

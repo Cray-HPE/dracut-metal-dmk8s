@@ -2,7 +2,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2022 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2022-2024 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -23,7 +23,7 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 #
 # metal-dmk8s-lib.sh
-[ "${metal_debug:-0}" = 0 ] || set -x
+[ "${METAL_DEBUG:-0}" = 0 ] || set -x
 
 export EPHEMERAL_DONE_FILE=/tmp/metalephemeraldisk.done
 
@@ -35,12 +35,12 @@ command -v info > /dev/null 2>&1 || . /lib/dracut-lib.sh
 # Creates a "done" file if the ephemeral disk and its partitions exist.
 #
 scan_ephemeral() {
-    local conrun_scheme=${metal_conrun%=*}
-    local conrun_authority=${metal_conrun#*=}
-    local conlib_scheme=${metal_conlib%=*}
-    local conlib_authority=${metal_conlib#*=}
-    local k8slet_scheme=${metal_k8slet%=*}
-    local k8slet_authority=${metal_k8slet#*=}
+    local conrun_scheme=${METAL_CONRUN%=*}
+    local conrun_authority=${METAL_CONRUN#*=}
+    local conlib_scheme=${METAL_CONLIB%=*}
+    local conlib_authority=${METAL_CONLIB#*=}
+    local k8slet_scheme=${METAL_K8SLET%=*}
+    local k8slet_authority=${METAL_K8SLET#*=}
     local disks=()
     disks+=( "/dev/disk/by-${conrun_scheme,,}/${conrun_authority^^}" )
     disks+=( "/dev/disk/by-${conlib_scheme,,}/${conlib_authority^^}" )
@@ -79,9 +79,9 @@ make_ephemeral() {
     command -v _trip_udev > /dev/null 2>&1 || . /lib/metal-lib.sh
 
     parted --wipesignatures -m --align=opt --ignore-busy -s "/dev/${target}" -- mktable gpt \
-        mkpart extended xfs 2048s "${metal_size_conrun:-75}GB" \
-        mkpart extended xfs "${metal_size_conrun:-75}GB" "${metal_size_conlib:-25}%" \
-        mkpart extended xfs "${metal_size_conlib:-25}%" "$((${metal_size_conlib:-25} + ${metal_size_k8slet:-25}))%"
+        mkpart extended xfs 2048s "${METAL_SIZE_CONRUN:-75}GB" \
+        mkpart extended xfs "${METAL_SIZE_CONRUN:-75}GB" "${METAL_SIZE_CONLIB:-25}%" \
+        mkpart extended xfs "${METAL_SIZE_CONLIB:-25}%" "$((${METAL_SIZE_CONLIB:-25} + ${METAL_SIZE_K8SLET:-25}))%"
 
     # NVME partitions have a "p" to delimit the partition number.
     if [[ "$target" =~ "nvme" ]]; then
@@ -90,23 +90,23 @@ make_ephemeral() {
 
     partprobe "/dev/${target}"
     _trip_udev
-    mkfs.xfs -f -L ${metal_conrun#*=} "/dev/${target}${nvme:+p}1" || metal_dmk8s_die "Failed to create ${metal_conrun#*=}"
+    mkfs.xfs -f -L "${METAL_CONRUN#*=}" "/dev/${target}${nvme:+p}1" || metal_dmk8s_die "Failed to create ${METAL_CONRUN#*=}"
     partprobe "/dev/${target}"
     _trip_udev
-    mkfs.xfs -f -L ${metal_conlib#*=} "/dev/${target}${nvme:+p}2" || metal_dmk8s_die "Failed to create ${metal_conlib#*=}"
+    mkfs.xfs -f -L "${METAL_CONLIB#*=}" "/dev/${target}${nvme:+p}2" || metal_dmk8s_die "Failed to create ${METAL_CONLIB#*=}"
     partprobe "/dev/${target}"
     _trip_udev
-    mkfs.xfs -f -L ${metal_k8slet#*=} "/dev/${target}${nvme:+p}3" || metal_dmk8s_die "Failed to create ${metal_k8slet#*=}"
+    mkfs.xfs -f -L "${METAL_K8SLET#*=}" "/dev/${target}${nvme:+p}3" || metal_dmk8s_die "Failed to create ${METAL_K8SLET#*=}"
 
     mkdir -p /run/containerd /var/lib/kubelet /var/lib/containerd
     {
-        printf '% -18s\t% -18s\t%s\t%s 0 0\n' "${metal_conrun}" /run/containerd xfs "$metal_fsopts_xfs"
-        printf '% -18s\t% -18s\t%s\t%s 0 0\n' "${metal_conlib}" /var/lib/containerd xfs "$metal_fsopts_xfs"
-        printf '% -18s\t% -18s\t%s\t%s 0 0\n' "${metal_k8slet}" /var/lib/kubelet xfs "$metal_fsopts_xfs"
-    } >>$metal_fstab
+        printf '% -18s\t% -18s\t%s\t%s 0 0\n' "${METAL_CONRUN}" /run/containerd xfs "$METAL_FSOPTS_XFS"
+        printf '% -18s\t% -18s\t%s\t%s 0 0\n' "${METAL_CONLIB}" /var/lib/containerd xfs "$METAL_FSOPTS_XFS"
+        printf '% -18s\t% -18s\t%s\t%s 0 0\n' "${METAL_K8SLET}" /var/lib/kubelet xfs "$METAL_FSOPTS_XFS"
+    } >> "$METAL_FSTAB"
 
     # Mount filesystems. Failure to mount here is fatal.
-    mount -a -v -T $metal_fstab
+    mount -a -v -T "$METAL_FSTAB"
 
     # echo 1 to signal that this module create a disk.
     echo 1 > $EPHEMERAL_DONE_FILE && return

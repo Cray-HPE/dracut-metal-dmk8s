@@ -2,7 +2,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2022 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2022-2024 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -26,29 +26,29 @@
 
 type getarg > /dev/null 2>&1 || . /lib/dracut-lib.sh
 
-getargbool 0 metal.debug -d -y metal_debug && metal_debug=1
-[ "${metal_debug:-0}" = 0 ] || set -x
+getargbool 0 metal.debug -d -y METAL_DEBUG && METAL_DEBUG=1
+[ "${METAL_DEBUG:-0}" = 0 ] || set -x
 
-metal_conrun=$(getarg metal.disk.conrun)
-[ -z "${metal_conrun}" ] && metal_conrun=LABEL=CONRUN
-metal_conlib=$(getarg metal.disk.conlib)
-[ -z "${metal_conlib}" ] && metal_conlib=LABEL=CONLIB
-metal_k8slet=$(getarg metal.disk.k8slet)
-[ -z "${metal_k8slet}" ] && metal_k8slet=LABEL=K8SLET
+METAL_CONRUN=$(getarg metal.disk.conrun)
+[ -z "${METAL_CONRUN}" ] && METAL_CONRUN=LABEL=CONRUN
+METAL_CONLIB=$(getarg metal.disk.conlib)
+[ -z "${METAL_CONLIB}" ] && METAL_CONLIB=LABEL=CONLIB
+METAL_K8SLET=$(getarg metal.disk.k8slet)
+[ -z "${METAL_K8SLET}" ] && METAL_K8SLET=LABEL=K8SLET
 
 # Affixed siz(s):
-metal_size_conrun=$(getargnum 75 10 150 metal.disk.conrun.size)
+METAL_SIZE_CONRUN=$(getargnum 75 10 150 metal.disk.conrun.size)
 # Percentages as size(s):
-metal_size_conlib=$(getargnum 40 10 45 metal.disk.conlib.size)
-metal_size_k8slet=$(getargnum 10 10 45 metal.disk.k8slet)
+METAL_SIZE_CONLIB=$(getargnum 40 10 45 metal.disk.conlib.size)
+METAL_SIZE_K8SLET=$(getargnum 10 10 45 metal.disk.k8slet)
 
-getargbool 0 metal.no-wipe -d -y metal_nowipe && metal_nowipe=1 || metal_nowipe=0
+getargbool 0 metal.no-wipe -d -y METAL_NOWIPE && METAL_NOWIPE=1 || METAL_NOWIPE=0
 
-export metal_debug
-export metal_conrun
-export metal_conlib
-export metal_k8slet
-export metal_size_conrun
-export metal_size_conlib
-export metal_size_k8slet
-export metal_nowipe
+export METAL_DEBUG
+export METAL_CONRUN
+export METAL_CONLIB
+export METAL_K8SLET
+export METAL_SIZE_CONRUN
+export METAL_SIZE_CONLIB
+export METAL_SIZE_K8SLET
+export METAL_NOWIPE
