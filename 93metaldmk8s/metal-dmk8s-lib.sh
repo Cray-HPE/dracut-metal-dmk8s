@@ -45,9 +45,9 @@ scan_ephemeral() {
     disks+=( "/dev/disk/by-${conrun_scheme,,}/${conrun_authority^^}" )
     disks+=( "/dev/disk/by-${conlib_scheme,,}/${conlib_authority^^}" )
     disks+=( "/dev/disk/by-${k8slet_scheme,,}/${k8slet_authority^^}" )
-    for disk in "${disks[@]}"; do 
+    for disk in "${disks[@]}"; do
         if blkid -s UUID -o value "$disk" >/dev/null; then
-    
+
             # echo 0 to signal that nothing was done; the disks exist
             echo 0 > $EPHEMERAL_DONE_FILE
         else
@@ -62,9 +62,9 @@ scan_ephemeral() {
 ##############################################################################
 # function: make_ephemeral
 #
-# Returns 0 if a disk was partitioned, otherwise this calls 
+# Returns 0 if a disk was partitioned, otherwise this calls
 # metal_die with a contextual error message.
-# 
+#
 # Requires 1 argument for which disk:
 #
 #   sda
